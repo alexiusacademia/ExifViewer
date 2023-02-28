@@ -1,0 +1,4 @@
+# Script to use for creating a bundle using pyinstaller
+
+1. MacOS
+pyinstaller --paths venv/lib/python3.10/site-packages main.py -F -w
