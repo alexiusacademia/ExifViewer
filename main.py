@@ -2,6 +2,8 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import wx
 
+from helper.help_dialog import HelpDialog
+
 
 def get_exif(filename):
     exif_data = {}
@@ -74,7 +76,17 @@ class MainFrame(wx.Frame):
             wx.MessageDialog(self, 'The photo provided doesn\'t contain exif data', 'Error').ShowModal()
 
         self.SetSizerAndFit(box)
+        self.Centre()
         self.Show()
+
+        # Get the position of this window
+        x, y = self.GetPosition()
+        width, height = self.GetSize()
+
+        help_dialog = HelpDialog(self)
+        help_dialog.SetPosition((x + width, y))
+        help_dialog.ShowModal()
+        help_dialog.Destroy()
 
 
 # Define a function to convert GPS coordinates to decimal degrees
