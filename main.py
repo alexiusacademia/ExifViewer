@@ -2,12 +2,11 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import wx
 
-import pprint
-
 
 def get_exif(filename):
     exif_data = {}
     image = Image.open(filename)
+
     info = image._getexif()
     if info:
         for tag, value in info.items():
@@ -28,16 +27,53 @@ class MainFrame(wx.Frame):
     def __init__(self, parent, title):
         super().__init__(parent, title=title)
 
-        lbl = wx.StaticText(self, label="Hello, World")
+        lbl_title = wx.StaticText(self, label="Exif Viewer")
+
         box = wx.BoxSizer(wx.VERTICAL)
+        box.Add(lbl_title, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        box.AddSpacer(30)
 
-        exif = get_exif('alex.jpg')
+        exif = get_exif('image.jpg')
 
-        print(exif['GPSInfo']['GPSLatitude'])
+        if 'GPSInfo' in exif:
+            latitude = exif['GPSInfo']['GPSLatitude']
+            longitude = exif['GPSInfo']['GPSLongitude']
+            latitude_ref = exif['GPSInfo']['GPSLatitudeRef']
+            longitude_ref = exif['GPSInfo']['GPSLongitudeRef']
 
-        box.Add(lbl)
+            lbl_latitude_ref = wx.StaticText(self, label=latitude_ref)
+            lbl_latitude_ref.SetSize((50, -1))
+            txt_latitude = wx.TextCtrl(self, value=str(latitude), style=wx.TE_CENTER)
+            txt_latitude.SetMinSize(wx.Size((250, -1)))
 
-        self.SetSizer(box)
+            lbl_longitude_ref = wx.StaticText(self, label=longitude_ref)
+            lbl_longitude_ref.SetSize((50, -1))
+            txt_longitude = wx.TextCtrl(self, value=str(longitude), style=wx.TE_CENTER)
+            txt_longitude.SetMinSize(wx.Size((250, -1)))
+
+            hbox_latitude = wx.BoxSizer(wx.HORIZONTAL)
+            hbox_latitude.AddSpacer(10)
+            hbox_latitude.Add(lbl_latitude_ref, 0)
+            hbox_latitude.AddSpacer(10)
+            hbox_latitude.Add(txt_latitude, 1)
+            hbox_latitude.AddSpacer(10)
+
+            hbox_longitude = wx.BoxSizer(wx.HORIZONTAL)
+            hbox_longitude.AddSpacer(10)
+            hbox_longitude.Add(lbl_longitude_ref, 0)
+            hbox_longitude.AddSpacer(10)
+            hbox_longitude.Add(txt_longitude, 1)
+
+            box.Add(hbox_longitude)
+            box.AddSpacer(10)
+            box.Add(hbox_latitude)
+            box.AddSpacer(10)
+
+        else:
+            # The photo doesn't contain exif info
+            wx.MessageDialog(self, 'The photo provided doesn\'t contain exif data', 'Error').ShowModal()
+
+        self.SetSizerAndFit(box)
         self.Show()
 
 
