@@ -1,3 +1,9 @@
 venv/
 .idea/
 .DS_STORE
+
+main.spec
+build/
+dist/
+
+*.jpg
