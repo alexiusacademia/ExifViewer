@@ -12,7 +12,6 @@ class HelpDialog(wx.Dialog):
         self.panel = wx.Panel(self)
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        print(dir_path)
 
         with open(f"{dir_path}/readme.md", "r") as f:
             markdown_text = f.read()
